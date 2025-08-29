@@ -1,0 +1,28 @@
+{
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+
+    // Use modern ESM
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "esnext",
+    "esModuleInterop": true,
+
+    // Generate declaration files
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+
+    // Type Safety
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    // ✅ Remove overly strict flags causing errors
+    "verbatimModuleSyntax": false,
+    "isolatedModules": true
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
