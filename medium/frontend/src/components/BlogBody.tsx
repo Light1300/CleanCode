@@ -1,7 +1,14 @@
-//@ts-ignore
-import {Blog} from "../hooks/index"
+
 import { Appbar } from "./Appbar"
 import { Avatar } from "./BlogCard"
+
+export interface Blog {
+  id: number;
+  title: string;
+  content: string;
+  authorName: string; // Fixed typo from "autherName"
+}
+
 
 export const BlogBody = ({ blog }: {blog: Blog}) => {
     return <div>

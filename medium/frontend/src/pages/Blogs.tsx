@@ -1,6 +1,6 @@
 import { Appbar } from "../components/Appbar";
 import { BlogCard } from "../components/BlogCard";
-// import { BlogSkeleton } from "../components/BlogSkeleton";
+import { BlogSkeleton } from "../components/BlogSkeleton";
 import { useBlogs } from "../hooks";
 
 export const Blogs = () => {
@@ -10,10 +10,8 @@ export const Blogs = () => {
     return (
       <div>
         <Appbar />
-        <div className="flex justify-center">
-          <div>
-            {/* <BlogSkeleton /> */}
-          </div>
+        <div className="flex justify-center mt-8">
+          <BlogSkeleton />
         </div>
       </div>
     );
@@ -22,16 +20,15 @@ export const Blogs = () => {
   return (
     <div>
       <Appbar />
-      <div className="flex justify-center">
-        <div className="max-w-xl w-full">
-          {blogs.map((blog) => (
+      <div className="flex justify-center mt-8 px-4">
+        <div className="grid gap-6 w-full max-w-4xl">
+          {(blogs || []).map((blog) => (
             <BlogCard
               key={blog.id}
-              id={blog.id}
               authorName={blog.authorName || "Anonymous"}
               title={blog.title}
               content={blog.content}
-              publishedDate={"2nd Feb 2024"} // Replace with actual date later
+              publishedDate={blog.published ? "Published" : "Draft"}
             />
           ))}
         </div>

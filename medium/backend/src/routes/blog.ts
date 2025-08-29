@@ -13,7 +13,7 @@ export const blogRouter = new Hono<{
   };
 }>();
 
-// Middleware: Verify JWT (with Bearer token support)
+// Middleware: Verify JWT
 blogRouter.use("/*", async (c, next) => {
   const authHeader = c.req.header("Authorization");
   if (!authHeader) {
@@ -30,7 +30,8 @@ blogRouter.use("/*", async (c, next) => {
     if (!payload?.id) {
       c.status(401);
       return c.json({ error: "Invalid token" });
-    }//@ts-ignore
+    }
+    // @ts-ignore
     c.set("userId", payload.id);
     await next();
   } catch {
@@ -85,26 +86,43 @@ blogRouter.put("/", async (c) => {
   }
 });
 
-// Get all posts
+// Get all posts -> { blogs }
 blogRouter.get("/bulk", async (c) => {
-  const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
+   const prisma = new PrismaClient({
+    datasourceUrl: c.env.DATABASE_URL,
+  }).$extends(withAccelerate());
+
   try {
     const posts = await prisma.post.findMany({
+      where: { published: true },
       select: {
         id: true,
         title: true,
         content: true,
-        author: { select: { name: true } },
+        published: true,
+        author: {
+          select: { name: true },
+        },
       },
     });
-    return c.json({ posts });
-  } catch {
-    c.status(500);
-    return c.json({ error: "Failed to fetch posts" });
+
+    const blogs = posts.map((p) => ({
+      id: p.id,
+      title: p.title,
+      content: p.content,
+      published: p.published,
+      authorName: p.author?.name ?? "Anonymous",
+    }));
+
+    return c.json({ blogs });
+  } catch (e) {
+    // console.error(e);
+    return c.json({ error: "Failed to fetch blogs" }, 500);
   }
 });
 
-// Get a single post
+
+// Get a single post -> { blog }
 blogRouter.get("/:id", async (c) => {
   const prisma = new PrismaClient({ datasourceUrl: c.env.DATABASE_URL }).$extends(withAccelerate());
 
@@ -124,8 +142,16 @@ blogRouter.get("/:id", async (c) => {
       c.status(404);
       return c.json({ error: "Post not found" });
     }
-    return c.json(post);
-  } catch {
+
+    const blog = {
+      id: post.id,
+      title: post.title,
+      content: post.content,
+      authorName: post.author?.name ?? "Anonymous",
+    };
+
+    return c.json({ blog });
+  } catch (err) {
     c.status(500);
     return c.json({ error: "Failed to fetch post" });
   }
