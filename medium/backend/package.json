@@ -8,11 +8,9 @@
   },
   "dependencies": {
     "@light1300/medium-common": "^1.0.6",
-    "@prisma/client": "^5.0.0",
-    "@prisma/client/edge": "^5.0.0",
-    "@prisma/extension-accelerate": "^5.0.0",
-    "hono": "^3.0.0",
-    "hono/jwt": "^3.0.0",
+    "@prisma/client": "^6.15.0",
+    "@prisma/extension-accelerate": "^2.0.2",
+    "hono": "^4.9.4",
     "prisma": "^6.15.0",
     "zod": "^4.1.4"
   },
@@ -20,4 +18,3 @@
     "wrangler": "^4.4.0"
   }
 }
-
