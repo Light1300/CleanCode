@@ -22,12 +22,12 @@ export const Blogs = () => {
       <Appbar />
       <div className="flex justify-center mt-8 px-4">
         <div className="grid gap-6 w-full max-w-4xl">
-          {(blogs || []).map((blog) => (
+          {(blogs || []).map((blog) => (//@ts-ignore
             <BlogCard
               key={blog.id}
               authorName={blog.authorName || "Anonymous"}
               title={blog.title}
-              content={blog.content}
+              content={blog.content}//@ts-ignore
               publishedDate={blog.published ? "Published" : "Draft"}
             />
           ))}
