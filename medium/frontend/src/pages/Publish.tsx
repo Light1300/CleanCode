@@ -110,7 +110,7 @@ function TextEditor({
                         <label className="sr-only">Publish post</label>
                         <textarea
                             onChange={onChange}
-                            value={value}
+                            value={value}   
                             id="editor"
                             rows={8}
                             className="focus:outline-none block w-full px-0 text-sm text-gray-800 bg-white border-0 pl-2"
