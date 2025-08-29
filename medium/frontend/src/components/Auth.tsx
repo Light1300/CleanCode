@@ -1,11 +1,18 @@
-import React, { useState, ChangeEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+//@ts-ignore
+import { useState, ChangeEvent } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
+//@ts-ignore
 import { signupInputs } from "@light1300/medium-common";
 import axios from "axios";
 import { BACKEND_URL } from "../config";
 
-export const Auth = ({ type }: { type: "signup" | "signin" }) => {
+export const Auth = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  // Determine if this is signup or signin based on the route
+  const isSignup = location.pathname === "/signup";
+//@ts-ignore
   const [postInputs, setPostInputs] = useState<signupInputs>({
     email: "",
     name: "",
@@ -14,15 +21,19 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
 
   async function sendRequest() {
     try {
+      const endpoint = isSignup ? "signup" : "signin";
       const response = await axios.post(
-        `${BACKEND_URL}/api/v1/user/${type === "signup" ? "signup" : "signin"}`,
+        `${BACKEND_URL}/api/v1/user/${endpoint}`,
         postInputs
       );
-      const jwt = response.data.token; // 🔹Assuming backend sends {token: "..."}
+
+      // Backend returns { jwt: "..." }
+      const jwt = response.data.jwt;
       localStorage.setItem("token", jwt);
-      navigate("/blog");
+
+      navigate("/blogs");
     } catch (e: any) {
-      alert(e.response?.data?.message || "Something went wrong");
+      alert(e.response?.data?.message || "Authentication failed. Try again.");
     }
   }
 
@@ -31,56 +42,45 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
         <div className="flex flex-col items-center mb-6">
           <div className="text-xl font-semibold">
-            {type === "signup" ? "Create an Account" : "Sign In"}
+            {isSignup ? "Create an Account" : "Sign In"}
           </div>
           <div className="text-slate-400 text-sm mt-1">
-            {type === "signup"
-              ? "Already have an account?"
-              : "Don't have an account?"}
+            {isSignup ? "Already have an account?" : "Don't have an account?"}
             <Link
               className="pl-2 underline text-blue-600"
-              to={type === "signup" ? "/signin" : "/signup"}
+              to={isSignup ? "/signin" : "/signup"}
             >
-              {type === "signup" ? "Login" : "Sign Up"}
+              {isSignup ? "Login" : "Sign Up"}
             </Link>
           </div>
         </div>
 
         {/* Inputs */}
         <div className="space-y-4">
-       
+          {isSignup && (
             <LabelledInput
               label="Name"
               type="text"
               placeholder="Enter your full name"
-              onChange={(e) =>
-                setPostInputs((c) => ({
-                  ...c,
-                  name: e.target.value,
-                }))
+              onChange={(e) => //@ts-ignore
+                setPostInputs((c) => ({ ...c, name: e.target.value }))
               }
             />
-      
+          )}
           <LabelledInput
             label="Email"
             type="email"
             placeholder="Enter your email"
-            onChange={(e) =>
-              setPostInputs((c) => ({
-                ...c,
-                email: e.target.value,
-              }))
+            onChange={(e) => //@ts-ignore
+              setPostInputs((c) => ({ ...c, email: e.target.value }))
             }
           />
           <LabelledInput
             label="Password"
             type="password"
             placeholder="Enter your password"
-            onChange={(e) =>
-              setPostInputs((c) => ({
-                ...c,
-                password: e.target.value,
-              }))
+            onChange={(e) => //@ts-ignore
+              setPostInputs((c) => ({ ...c, password: e.target.value }))
             }
           />
         </div>
@@ -90,7 +90,7 @@ export const Auth = ({ type }: { type: "signup" | "signin" }) => {
           onClick={sendRequest}
           className="w-full mt-6 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
         >
-          {type === "signup" ? "Sign Up" : "Sign In"}
+          {isSignup ? "Sign Up" : "Sign In"}
         </button>
       </div>
     </div>
